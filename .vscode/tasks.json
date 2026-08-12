@@ -1,0 +1,108 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "T2S: Validate converted SQL",
+      "type": "shell",
+      "command": "python3",
+      "args": ["04_validate/validate.py", "${input:convertedFile}"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "group": { "kind": "test", "isDefault": true }
+    },
+    {
+      "label": "T2S: Validate Teradata source (control — expect FAIL)",
+      "type": "shell",
+      "command": "python3",
+      "args": ["04_validate/validate.py", "${input:inputFile}"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true }
+    },
+    {
+      "label": "T2S: Archive stage outputs — reset ALL",
+      "type": "shell",
+      "command": "python3",
+      "args": ["05_report/archive_outputs.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "T2S: Archive stage outputs — one unit",
+      "type": "shell",
+      "command": "python3",
+      "args": ["05_report/archive_outputs.py", "${input:archiveBase}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "T2S: Annotate SQL with semantic comments",
+      "detail": "Embed the (editable) semantic explanation into <name>_final.sql as comments",
+      "type": "shell",
+      "command": "python3",
+      "args": [
+        "06_explain/annotate.py",
+        "--sql", "${input:convertedFile}",
+        "--md", "${input:semanticMd}",
+        "--out", "${input:finalFile}"
+      ],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true }
+    },
+    {
+      "label": "T2S: Refresh interactive report",
+      "type": "shell",
+      "command": "python3",
+      "args": ["05_report/build_report.py"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+      "detail": "Regenerate report.html from all stage outputs (run after every migration)"
+    },
+    {
+      "label": "T2S: Serve interactive report",
+      "type": "shell",
+      "command": "python3",
+      "args": ["05_report/serve_report.py"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "detail": "Serve report.html so the Semantic and Review tabs can save + trigger re-migration"
+    },
+    {
+      "label": "T2S: Setup — install deps (run once)",
+      "detail": "Idempotent: installs sqlglot only if missing, then exits instantly on later runs.",
+      "type": "shell",
+      "command": "python3",
+      "args": ["bootstrap.py"],
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "convertedFile",
+      "type": "promptString",
+      "description": "Path to the PURE converted Snowflake SQL file (base)",
+      "default": "03_convert/output/ins_wrk_dc_priority_snowflake.sql"
+    },
+    {
+      "id": "finalFile",
+      "type": "promptString",
+      "description": "Path to write the annotated final SQL",
+      "default": "03_convert/output/ins_wrk_dc_priority_final.sql"
+    },
+    {
+      "id": "semanticMd",
+      "type": "promptString",
+      "description": "Path to the editable semantic explanation markdown",
+      "default": "06_explain/output/semantic_ins_wrk_dc_priority.md"
+    },
+    {
+      "id": "inputFile",
+      "type": "promptString",
+      "description": "Path to the Teradata source file",
+      "default": "00_input/ins_wrk_dc_priority.bteq"
+    },
+    {
+      "id": "archiveBase",
+      "type": "promptString",
+      "description": "Unit base name to archive (e.g. ins_wrk_dc_priority)"
+    }
+  ]
+}
