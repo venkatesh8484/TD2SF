@@ -1,7 +1,6 @@
-# Teradata → Snowflake Migration Pipeline (ICM-style)
+# Teradata → Snowflake Migration Pipeline
 
-An [Interpretable Context Methodology](https://arxiv.org/abs/2603.16021)
-pipeline: numbered folders are stages, markdown files carry the prompts and
+A resuable converstion pipeline: numbered folders are stages, markdown files carry the prompts and
 conversion rules, and local scripts handle the mechanical work (validation,
 annotation, reporting). Agents walk the stages in order, reading the right files
 at the right moment. A human reviews output between stages.
@@ -108,7 +107,7 @@ tasks*.
    ```
 
    `.github/copilot-instructions.md` is loaded automatically on every Copilot
-   request, so the agent always knows the ICM rules and reads `02_rules/` before
+   request, so the agent always knows the conversion rules and reads `02_rules/` before
    converting. Review the output after each stage.
 6. Run **Terminal → Run Task → T2S: Validate converted SQL** (or the task
    auto-runs from `/04-validate`) to get the mechanical PASS/FAIL. Run **T2S:
