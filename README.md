@@ -49,7 +49,7 @@ teradata2snowflake/
 └── demo.html        Interactive walkthrough of the pipeline
 ```
 
-## The ICM solution runs in GitHub Copilot / VS Code
+## The conversion solution runs in GitHub Copilot / VS Code
 
 This repo is driven from **GitHub Copilot Chat in VS Code** — no bespoke app, no
 redeploy. Two ways to run it, both defined under `.github/`:
